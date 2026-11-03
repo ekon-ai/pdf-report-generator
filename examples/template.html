@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>Счёт {{ invoice_number }}</title>
+  <style>
+    @page { size: A4; margin: 20mm; }
+
+    /* FR-8.1 — font stack guaranteed to cover Cyrillic on typical systems.
+       WeasyPrint picks the FIRST available family; if none is installed it
+       silently falls back to a system default that may lack Cyrillic, so use
+       `--font-check` to diagnose, or embed a font via @font-face below. */
+    body {
+      font-family: "DejaVu Sans", "Liberation Sans", "Noto Sans", Arial, sans-serif;
+      font-size: 12pt;
+    }
+
+    /* FR-8.3 (Option A) — self-contained font for minimal Docker/CI images.
+       Drop DejaVuSans.ttf into examples/fonts/ and uncomment:
+    @font-face {
+      font-family: "DejaVu Sans Embedded";
+      src: url("fonts/DejaVuSans.ttf") format("truetype");
+    }
+    body { font-family: "DejaVu Sans Embedded", sans-serif; }
+    */
+
+    h1 { font-size: 18pt; border-bottom: 2px solid #333; padding-bottom: 4pt; }
+    table { border-collapse: collapse; width: 100%; margin-top: 12pt; }
+    th, td { border: 1px solid #999; padding: 6pt 8pt; text-align: left; }
+    th { background: #eee; }
+    .total { font-weight: bold; font-size: 14pt; }
+  </style>
+</head>
+<body>
+  <h1>Счёт №{{ invoice_number }}</h1>
+  <table>
+    <tr><th>Клиент</th><td>{{ client_name }}</td></tr>
+    <tr><th>Номер счёта</th><td>{{ invoice_number }}</td></tr>
+    <tr><th>Сумма</th><td class="total">{{ total_amount }} руб.</td></tr>
+  </table>
+  {% if total_amount|int > 30000 %}
+  <p><b>Примечание:</b> сумма превышает 30 000 руб. — требуется согласование.</p>
+  {% endif %}
+</body>
+</html>
